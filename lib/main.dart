@@ -1,12 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/hive_flutter.dart'; // Add this import
 import 'common/helper/storage/local_storage.dart';
 import 'common/helper/storage/shared_preferences.dart';
 import 'my_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter(); // Initialize Hive here
   await initDependencies();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
@@ -25,7 +27,7 @@ void main() async {
 initDependencies() async {
   SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper();
   LocalStorageHelper localStorageHelper = LocalStorageHelper();
-  Future.wait([
+  await Future.wait([
     sharedPreferencesHelper.init(),
     localStorageHelper.init(),
     EasyLocalization.ensureInitialized(),
