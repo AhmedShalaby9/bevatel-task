@@ -20,6 +20,8 @@ dependencies:
   easy_localization: ^3.0.1
   hive_flutter: ^1.0.0
   after_layout: ^1.2.0
+  cached_network_image: ^3.3.1
+
 
 
 
