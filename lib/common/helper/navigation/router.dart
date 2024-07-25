@@ -1,6 +1,8 @@
 import 'package:bevatel_task/common/helper/navigation/routes.dart';
 import 'package:flutter/material.dart';
 
+import '../../../features/onboarding/presentation/view/screens/splash_screen.dart';
+
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case AppRoutes.splashScreen:
@@ -8,10 +10,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (context) => const SplashScreen(),
       );
 
-    case AppRoutes.loginScreen:
-      return MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      );
+    // case AppRoutes.loginScreen:
+    //   return MaterialPageRoute(
+    //     builder: (context) => const LoginScreen(),
+    //   );
 
     default:
       return MaterialPageRoute(
