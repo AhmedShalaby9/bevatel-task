@@ -13,4 +13,13 @@ class LangKeys {
   static String validName = 'enterValidName'.tr();
   static String passwordShort = 'passwordShort'.tr();
   static String passwordNotMatched = 'passwordNotMatch'.tr();
+  static String registerTitle = "registerTitle".tr();
+  static String account = "account".tr();
+  static String fullName = "fullName".tr();
+  static String phoneNumber = "phoneNumber".tr();
+  static String country = "country".tr();
+  static String confirmPass = "confirmPass".tr();
+  static String register = "register".tr();
+
+
 }

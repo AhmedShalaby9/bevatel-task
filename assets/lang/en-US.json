@@ -10,5 +10,12 @@
   "enterValidEmail": "Please enter a valid email address",
   "enterValidName": "Please enter a valid name",
   "passwordShort": "Password is too short",
-  "passwordNotMatch": "Passwords do not match"
+  "passwordNotMatch": "Passwords do not match",
+  "registerTitle": "Create an",
+  "account": "Account",
+  "fullName": "Full Name",
+  "phoneNumber": "Phone Number",
+  "country": "Country",
+  "confirmPass": "Confirm Password",
+  "register": "Register"
 }
