@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp>
       builder: (context, child) => MaterialApp(
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
-        title: "TrueDar",
+        title: "Bevatel",
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
