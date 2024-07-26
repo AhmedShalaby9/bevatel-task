@@ -23,5 +23,8 @@
   "delete": "Delete",
   "from": "From",
   "to": "To",
-  "persons": "Persons"
+  "persons": "Persons",
+  "travels": "Travels",
+  "add_travel": "Add travel",
+  "submit": "Submit"
 }

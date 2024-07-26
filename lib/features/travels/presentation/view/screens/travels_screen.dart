@@ -1,4 +1,6 @@
 import 'package:bevatel_task/common/constants/lang_keys.dart';
+import 'package:bevatel_task/common/helper/navigation/navigation.dart';
+import 'package:bevatel_task/common/helper/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -20,7 +22,7 @@ class _TravelsScreenState extends State<TravelsScreen> {
         backgroundColor: AppColors.primary,
         actions: [Text(LangKeys.chats)],
         automaticallyImplyLeading: false,
-        title: Text(LangKeys.account),
+        title: Text(LangKeys.travels),
       ),
       body: Padding(
         padding: const EdgeInsets.all(18.0),
@@ -32,6 +34,11 @@ class _TravelsScreenState extends State<TravelsScreen> {
             itemBuilder: (context, index) {
               return TravelItem();
             }),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigation().navigateTo(routeName: AppRoutes.addNewTravel);
+        },
       ),
     );
   }

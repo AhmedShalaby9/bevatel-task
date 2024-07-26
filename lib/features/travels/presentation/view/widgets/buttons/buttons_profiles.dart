@@ -10,7 +10,7 @@ class EditButtonFactory extends BaseButtonFactory {
     return ElevatedButton.styleFrom(
       backgroundColor: AppColors.primary,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      textStyle: TextStyle(fontSize: 14.sp),
+      textStyle: TextStyle(fontSize: 14.sp, color: AppColors.blackBG),
     );
   }
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1095092480258",
+    "project_id": "bevatel-task",
+    "storage_bucket": "bevatel-task.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095092480258:android:d0558b5319a072f9c2fa1b",
+        "android_client_info": {
+          "package_name": "com.example.bevatel_task"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBO52bvLiCoVOThSXTbr7fThivEZjEw7uQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

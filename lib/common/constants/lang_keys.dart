@@ -26,4 +26,10 @@ class LangKeys {
   static String from = "from".tr();
   static String to = "To".tr();
   static String persons = "Persons".tr();
+  static String travels = "Travels".tr();
+  static String addTravel = "add_travel".tr();
+  static String submit = "submit".tr();
+  static String travelTitle = "travelTitle".tr();
+  static String travelDesc = "travelDesc".tr();
+  static String numberOfPersons = "numberOfPersons".tr();
 }

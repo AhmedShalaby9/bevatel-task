@@ -16,11 +16,9 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen>
-    with SingleTickerProviderStateMixin {
+class _SignUpScreenState extends State<SignUpScreen> {
   bool passwordVisible = false;
   bool confirmPasswordVisible = false;
-  late TabController _tabController;
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
@@ -31,8 +29,6 @@ class _SignUpScreenState extends State<SignUpScreen>
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
-
     super.initState();
   }
 
@@ -68,8 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen>
               style:
                   TextThemes.style12400.copyWith(color: AppColors.greyMedium),
             ),
-            SizedBox(height: 30.h),
-            SizedBox(height: 24.h),
+             SizedBox(height: 24.h),
             _buildFullNameTextField(),
             SizedBox(height: 15.h),
             _buildEmailTextField(),

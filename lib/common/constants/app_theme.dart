@@ -10,12 +10,10 @@ ThemeData buildAppTheme(context) {
     useMaterial3: false,
     scaffoldBackgroundColor: AppColors.white,
     appBarTheme: AppBarTheme(
+      titleTextStyle: TextThemes.bold3.copyWith(color: AppColors.blackBG) ,
       backgroundColor: AppColors.white,
       elevation: 0,
-      iconTheme: IconThemeData(
-        size: 28.w,
-        color: AppColors.primary,
-      ),
+      iconTheme: IconThemeData(size: 28.w, color: AppColors.blackBG),
     ),
     inputDecorationTheme: InputDecorationTheme(
         filled: true,

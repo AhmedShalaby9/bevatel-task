@@ -1,4 +1,5 @@
 import 'package:bevatel_task/common/helper/navigation/routes.dart';
+import 'package:bevatel_task/features/travels/presentation/view/screens/add_travel_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../features/auth/presentation/view/screens/login_screen.dart';
@@ -9,22 +10,19 @@ import '../../../features/travels/presentation/view/screens/travels_screen.dart'
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case AppRoutes.splashScreen:
-      return MaterialPageRoute(
-        builder: (context) => const SplashScreen(),
-      );
+      return MaterialPageRoute(builder: (context) => const SplashScreen());
 
     case AppRoutes.loginScreen:
-      return MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      );
+      return MaterialPageRoute(builder: (context) => const LoginScreen());
+
     case AppRoutes.signupScreen:
-      return MaterialPageRoute(
-        builder: (context) => const SignUpScreen(),
-      );
+      return MaterialPageRoute(builder: (context) => const SignUpScreen());
+
     case AppRoutes.travelsScreen:
-      return MaterialPageRoute(
-        builder: (context) => const TravelsScreen(),
-      );
+      return MaterialPageRoute(builder: (context) => const TravelsScreen());
+
+    case AppRoutes.addNewTravel:
+      return MaterialPageRoute(builder: (context) => const NewTravelScreen());
 
     default:
       return MaterialPageRoute(
