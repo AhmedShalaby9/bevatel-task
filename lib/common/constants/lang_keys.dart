@@ -20,6 +20,7 @@ class LangKeys {
   static String country = "country".tr();
   static String confirmPass = "confirmPass".tr();
   static String register = "register".tr();
+  static String chats = "chats".tr();
 
 
 }

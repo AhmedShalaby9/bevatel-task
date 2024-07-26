@@ -123,7 +123,9 @@ class _LoginScreenState extends State<LoginScreen> {
       child: RoundedButton(
         model: ButtonModel(
           onPress: () {
-            loginKey.currentState!.validate();
+            Navigation()
+                .navigateAndRemoveUntil(routeName: AppRoutes.travelsScreen);
+            //loginKey.currentState!.validate();
           },
           title: LangKeys.login,
           textColor: AppColors.black,

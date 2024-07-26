@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../features/auth/presentation/view/screens/login_screen.dart';
 import '../../../features/auth/presentation/view/screens/signup_screen.dart';
 import '../../../features/onboarding/presentation/view/screens/splash_screen.dart';
+import '../../../features/travels/presentation/view/screens/travels_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -19,6 +20,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AppRoutes.signupScreen:
       return MaterialPageRoute(
         builder: (context) => const SignUpScreen(),
+      );
+    case AppRoutes.travelsScreen:
+      return MaterialPageRoute(
+        builder: (context) => const TravelsScreen(),
       );
 
     default:

@@ -17,5 +17,6 @@
   "phoneNumber": "Phone Number",
   "country": "Country",
   "confirmPass": "Confirm Password",
-  "register": "Register"
+  "register": "Register",
+  "chats": "Chats"
 }
