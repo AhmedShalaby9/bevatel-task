@@ -18,5 +18,10 @@
   "country": "Country",
   "confirmPass": "Confirm Password",
   "register": "Register",
-  "chats": "Chats"
+  "chats": "Chats",
+  "edit": "Edit",
+  "delete": "Delete",
+  "from": "From",
+  "to": "To",
+  "persons": "Persons"
 }

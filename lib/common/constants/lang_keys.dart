@@ -21,6 +21,9 @@ class LangKeys {
   static String confirmPass = "confirmPass".tr();
   static String register = "register".tr();
   static String chats = "chats".tr();
-
-
+  static String edit = "edit".tr();
+  static String delete = "delete".tr();
+  static String from = "from".tr();
+  static String to = "To".tr();
+  static String persons = "Persons".tr();
 }
