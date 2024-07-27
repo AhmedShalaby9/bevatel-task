@@ -1,5 +1,7 @@
 Chat and Travel Management Application
 Project Overview
+
+
 This project is a chat application that includes features such as user authentication (sign-up and login), real-time chat messaging, image upload, and travel management. The application leverages the BLoC (Business Logic Component) pattern for state management and Firebase for backend services, including Firestore for database operations and Firebase Storage for image uploads.
 
 Data Layer
@@ -114,5 +116,19 @@ Users can send and receive chat messages in real-time. The chat state is managed
 Travel Management
 Users can manage travel records, including adding, updating, and deleting travels. The travel state is managed using the TravelBloc.
 
-Customization
-Feel free to customize the UI components and BLoC logic according to your specific requirements.
+Offline-First Functionality
+The application is designed to work seamlessly offline. Data is cached locally and synced with Firestore when a connection is available.
+
+Data Synchronization
+Data synchronization is handled automatically by Firebase. Changes made while offline are synced with Firestore once the device is back online.
+
+Architecture Description
+The project follows clean architecture principles, separating the project into three main layers:
+
+Presentation Layer: Handles the UI and state management.
+Domain Layer: Contains business logic and models.
+Data Layer: Manages data retrieval and storage, including local storage and network requests.
+Assumptions and Decisions
+Firebase is used for real-time database functionality and image storage.
+The BLoC pattern is used for state management to ensure a clear separation of concerns and maintainability.
+Hive or Isar is used for local storage to support offline-first functionality.
