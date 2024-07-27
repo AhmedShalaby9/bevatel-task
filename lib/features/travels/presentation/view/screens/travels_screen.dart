@@ -30,7 +30,16 @@ class _TravelsScreenState extends State<TravelsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
-        actions: [Text(LangKeys.chats)],
+        actions: [Center(
+          child: InkWell(
+              onTap: (){
+                Navigation().navigateTo(routeName: AppRoutes.chatScreen);
+              } ,
+              child: Padding(
+                padding:   EdgeInsets.symmetric(horizontal: 10.w,vertical: 6.h),
+                child: Text(LangKeys.chats),
+              )),
+        )],
         automaticallyImplyLeading: false,
         title: Text(LangKeys.travels),
       ),

@@ -7,4 +7,7 @@ class ImagePaths {
   static const String loginImage = "${_imagesBase}login_image.png";
   static const String splashIcon = "${_iconsBase}splash_lottieFile.json";
   static const String arrowBackIcon = "${_iconsBase}arrow_back.svg";
+  static const String seen = "${_iconsBase}seen.svg";
+  static const String active = "${_iconsBase}active.svg";
+
 }

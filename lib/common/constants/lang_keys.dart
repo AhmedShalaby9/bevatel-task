@@ -34,4 +34,8 @@ class LangKeys {
   static String numberOfPersons = "numberOfPersons".tr();
   static String editTravel = "editTravel".tr();
   static String update = "update".tr();
+  static String chat = "chat".tr();
+  static String search = "search".tr();
+  static String online = "online".tr();
+  static String saySomething = "saySomething".tr();
 }

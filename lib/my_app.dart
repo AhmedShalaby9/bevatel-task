@@ -1,4 +1,6 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:bevatel_task/features/chat/data/repo_impl/chat_repo.dart';
+import 'package:bevatel_task/features/chat/presenttion/viewmodel/chat_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,7 +16,6 @@ import 'features/travels/data/repo_impl/travels_repo.dart';
 import 'features/travels/presentation/viewmodel/travels_bloc.dart';
 import 'features/travels/presentation/viewmodel/travels_event.dart';
 
-
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatefulWidget {
@@ -29,7 +30,9 @@ class _MyAppState extends State<MyApp>
   @override
   Widget build(BuildContext context) {
     final travelRepo = TravelsRepoImpl(FirebaseFirestore.instance);
-    final authRepo = AuthRepo(FirebaseAuth.instance, FirebaseFirestore.instance);
+    final authRepo =
+        AuthRepo(FirebaseAuth.instance, FirebaseFirestore.instance);
+    final chatRepo = ChatsRepoImpl(FirebaseFirestore.instance);
 
     return ScreenUtilInit(
       designSize: const Size(375, 812),
@@ -38,11 +41,14 @@ class _MyAppState extends State<MyApp>
       builder: (context, child) => MultiBlocProvider(
         providers: [
           BlocProvider<TravelBloc>(
-            create: (context) => TravelBloc(travelRepo: travelRepo)
-              ..add(LoadTravels()),
+            create: (context) =>
+                TravelBloc(travelRepo: travelRepo)..add(LoadTravels()),
           ),
           BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(authRepo: authRepo),
+          ),
+          BlocProvider<ChatBloc>(
+            create: (context) => ChatBloc(chatRepo: chatRepo),
           ),
         ],
         child: MaterialApp(
