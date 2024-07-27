@@ -1,4 +1,4 @@
-import '../../data/entities/chat_entity.dart';
+ import '../../data/entities/chat_entity.dart';
 
 abstract class ChatEvent {}
 
@@ -6,6 +6,12 @@ class LoadChats extends ChatEvent {
   final String userId;
 
   LoadChats(this.userId);
+}
+
+class StreamChats extends ChatEvent {
+  final String userId;
+
+  StreamChats(this.userId);
 }
 
 class AddChat extends ChatEvent {
@@ -28,8 +34,9 @@ class DeleteChat extends ChatEvent {
   DeleteChat(this.chatId, this.userId);
 }
 
-class StreamChats extends ChatEvent {
-  final String userId;
+class UploadImage extends ChatEvent {
+  final String filePath;
+  final ChatEntity chat;
 
-  StreamChats(this.userId);
+  UploadImage(this.filePath, this.chat);
 }

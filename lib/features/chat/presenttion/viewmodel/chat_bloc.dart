@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
 import '../../domain/models/chat_model.dart';
 import '../../domain/repo/i_chat_repo.dart';
 import 'chat_events.dart';
@@ -9,10 +9,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   ChatBloc({required this.chatRepo}) : super(ChatInitial()) {
     on<LoadChats>(_onLoadChats);
+    on<StreamChats>(_onStreamChats);
     on<AddChat>(_onAddChat);
     on<UpdateChat>(_onUpdateChat);
     on<DeleteChat>(_onDeleteChat);
-    on<StreamChats>(_onStreamChats);
+    on<UploadImage>(_onUploadImage);
   }
 
   Future<void> _onLoadChats(LoadChats event, Emitter<ChatState> emit) async {
@@ -25,13 +26,40 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-  Future<void> _onAddChat(AddChat event, Emitter<ChatState> emit) async {
+  void _onStreamChats(StreamChats event, Emitter<ChatState> emit) {
+    emit(ChatLoading());
     try {
-      await chatRepo.addChat(event.chat);
-      emit(ChatAdded());
-      add(LoadChats(event.userId));
+      chatRepo.streamChats(event.userId).listen((chats) {
+        add(LoadChats(event.userId));
+      });
     } catch (e) {
       emit(ChatError(e.toString()));
+    }
+  }
+
+  Future<void> _onAddChat(AddChat event, Emitter<ChatState> emit) async {
+    try {
+      if (state is ChatLoaded) {
+        final List<ChatModel> updatedChats =
+            List.from((state as ChatLoaded).chats);
+        final newChat = ChatModel(
+          id: event.chat.id,
+          sentUserId: event.chat.sentUserId,
+          sentUserName: event.chat.sentUserName,
+          message: event.chat.message,
+          imageUrl: event.chat.imageUrl,
+          timestamp: event.chat.timestamp,
+        );
+        updatedChats.add(newChat);
+        emit(ChatLoaded(updatedChats));
+
+        // Add the chat to the repository (no need to wait for completion)
+        chatRepo.addChat(event.chat);
+      } else {
+        emit(ChatError('Failed to add chat: No existing chat state.'));
+      }
+    } catch (e) {
+      emit(ChatError('Failed to add chat: $e'));
     }
   }
 
@@ -39,7 +67,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       await chatRepo.updateChat(event.chat);
       emit(ChatUpdated());
-      add(LoadChats(event.chat.sentUserId));
     } catch (e) {
       emit(ChatError(e.toString()));
     }
@@ -49,19 +76,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       await chatRepo.deleteChat(event.chatId);
       emit(ChatDeleted());
-      add(LoadChats(event.userId));
     } catch (e) {
       emit(ChatError(e.toString()));
     }
   }
 
-  Future<void> _onStreamChats(StreamChats event, Emitter<ChatState> emit) async {
+  Future<void> _onUploadImage(
+      UploadImage event, Emitter<ChatState> emit) async {
     try {
-      await emit.forEach(
-        chatRepo.streamChats(event.userId),
-        onData: (List<ChatModel> chats) => ChatLoaded(chats),
-        onError: (e, stackTrace) => ChatError(e.toString()),
-      );
+      final imageUrl = await chatRepo.uploadImage(event.filePath);
+      final updatedChat = event.chat.copyWith(imageUrl: imageUrl);
+      await chatRepo.addChat(updatedChat);
+      emit(ChatImageUploaded());
+      add(LoadChats(event.chat.sentUserId));
     } catch (e) {
       emit(ChatError(e.toString()));
     }

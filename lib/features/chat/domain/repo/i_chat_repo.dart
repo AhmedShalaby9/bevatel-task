@@ -7,4 +7,5 @@ abstract class IChatRepo {
   Future<void> updateChat(ChatEntity chat);
   Future<void> deleteChat(String chatId);
   Stream<List<ChatModel>> streamChats(String userId);
+  Future<String> uploadImage(String path);
 }

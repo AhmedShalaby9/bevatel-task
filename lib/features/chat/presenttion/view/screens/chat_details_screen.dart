@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../../common/constants/app_colors.dart';
 import '../../../../../common/constants/lang_keys.dart';
 import '../../../../../common/constants/text_themes.dart';
@@ -13,7 +14,6 @@ import '../../viewmodel/chat_bloc.dart';
 import '../../viewmodel/chat_events.dart';
 import '../../viewmodel/chat_state.dart';
 import '../widgets/message_card.dart';
-import '../widgets/pick_image_button.dart';
 import '../widgets/send_message_button.dart';
 
 class ChatDetailsScreen extends StatefulWidget {
@@ -27,6 +27,7 @@ class ChatDetailsScreen extends StatefulWidget {
 
 class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   final TextEditingController _chatController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -77,12 +78,12 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
               Text(
                 widget.user.name,
                 style:
-                TextThemes.style14700.copyWith(color: AppColors.backGround),
+                    TextThemes.style14700.copyWith(color: AppColors.backGround),
               ),
               Text(
                 LangKeys.online,
                 style:
-                TextThemes.style10600.copyWith(color: AppColors.greyMedium),
+                    TextThemes.style10600.copyWith(color: AppColors.greyMedium),
               )
             ],
           )
@@ -97,8 +98,10 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
 
   Widget _buildChatList(List<ChatModel> chats) {
     return ListView.builder(
+      reverse: true,
       itemCount: chats.length,
       itemBuilder: (context, index) {
+        chats.sort((a, b) => b.timestamp.compareTo(a.timestamp));
         final chat = chats[index];
         final isSentByMe = chat.sentUserId == widget.user.id;
         return MessageCard(chat: chat, isSentByMe: isSentByMe);
@@ -125,7 +128,10 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const PickImageButton(),
+                  IconButton(
+                    icon: const Icon(Icons.image, color: AppColors.primary),
+                    onPressed: _pickImage,
+                  ),
                   SizedBox(width: 10.w),
                 ],
               ),
@@ -139,6 +145,20 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
             )),
       ),
     );
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final chat = ChatEntity(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        sentUserId: widget.user.id,
+        sentUserName: widget.user.name,
+        timestamp: DateTime.now(),
+      );
+
+      context.read<ChatBloc>().add(UploadImage(pickedFile.path, chat));
+    }
   }
 
   void _sendMessage() {

@@ -1,4 +1,4 @@
-import '../../domain/models/chat_model.dart';
+ import '../../domain/models/chat_model.dart';
 
 abstract class ChatState {}
 
@@ -18,10 +18,10 @@ class ChatUpdated extends ChatState {}
 
 class ChatDeleted extends ChatState {}
 
+class ChatImageUploaded extends ChatState {}
+
 class ChatError extends ChatState {
   final String message;
 
   ChatError(this.message);
 }
-
-class ChatStreaming extends ChatState {}

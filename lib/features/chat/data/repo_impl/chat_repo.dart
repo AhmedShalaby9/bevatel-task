@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../../domain/models/chat_model.dart';
 import '../../domain/repo/i_chat_repo.dart';
 import '../entities/chat_entity.dart';
@@ -6,8 +9,9 @@ import '../mappers/chat_mapper.dart';
 
 class ChatsRepoImpl extends IChatRepo {
   final FirebaseFirestore firestore;
+  final FirebaseStorage storage;
 
-  ChatsRepoImpl(this.firestore);
+  ChatsRepoImpl(this.firestore, this.storage);
 
   @override
   Future<List<ChatModel>> getChats(String userId) async {
@@ -45,6 +49,16 @@ class ChatsRepoImpl extends IChatRepo {
       await firestore.collection('chats').doc(chatId).delete();
     } catch (e) {
       throw Exception('Error deleting chat: $e');
+    }
+  }
+
+  Future<String> uploadImage(String path) async {
+    File file = File(path);
+    try {
+      TaskSnapshot snapshot = await storage.ref().child('chat_images/${file.uri.pathSegments.last}').putFile(file);
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      throw Exception('Error uploading image: $e');
     }
   }
 

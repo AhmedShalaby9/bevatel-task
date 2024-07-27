@@ -1,27 +1,17 @@
-import '../../data/entities/chat_entity.dart';
+class ChatModel {
+  final String id;
+  final String sentUserId;
+  final String sentUserName;
+  final String? message;
+  final String? imageUrl;
+  final DateTime timestamp;
 
-class ChatModel extends ChatEntity {
   ChatModel({
-    required String id,
-    required String sentUserId,
-    required String sentUserName,
-    required String message,
-    required DateTime timestamp,
-  }) : super(
-    id: id,
-    sentUserId: sentUserId,
-    sentUserName: sentUserName,
-    message: message,
-    timestamp: timestamp,
-  );
-
-  factory ChatModel.fromEntity(ChatEntity entity) {
-    return ChatModel(
-      id: entity.id,
-      sentUserId: entity.sentUserId,
-      sentUserName: entity.sentUserName,
-      message: entity.message,
-      timestamp: entity.timestamp,
-    );
-  }
+    required this.id,
+    required this.sentUserId,
+    required this.sentUserName,
+    this.message,
+    this.imageUrl,
+    required this.timestamp,
+  });
 }
