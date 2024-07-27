@@ -27,6 +27,7 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   firebase_storage:
+  equatable: ^2.0.3
 
 
 

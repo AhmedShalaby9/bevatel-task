@@ -26,5 +26,7 @@
   "persons": "Persons",
   "travels": "Travels",
   "add_travel": "Add travel",
-  "submit": "Submit"
+  "submit": "Submit",
+  "editTravel":"Edit travel",
+  "update": "Update"
 }

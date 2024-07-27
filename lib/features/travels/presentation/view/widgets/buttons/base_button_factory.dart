@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class BaseButtonFactory {
-  Widget createButton() {
+  Widget createButton(Function()? onPressed) {
     return ElevatedButton.icon(
-
-      onPressed: onPressed,
+      onPressed: onPressed,  // Corrected here
       icon: Icon(icon, size: 18.sp),
       label: Text(label),
       style: getButtonStyle(),
@@ -13,7 +12,6 @@ abstract class BaseButtonFactory {
   }
 
   ButtonStyle getButtonStyle();
-  abstract VoidCallback? onPressed;
   abstract String label;
   abstract IconData icon;
 }

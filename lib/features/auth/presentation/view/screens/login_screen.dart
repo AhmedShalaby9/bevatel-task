@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../common/constants/app_colors.dart';
 import '../../../../../common/constants/image_paths.dart';
@@ -10,6 +11,9 @@ import '../../../../../common/helper/navigation/routes.dart';
 import '../../../../../common/helper/validations/form_validation.dart';
 import '../../../../../common/models/button_model.dart';
 import '../../../../../common/widgets/rounded_button.dart';
+import '../../viewmodel/bloc/auth_bloc.dart';
+import '../../viewmodel/bloc/auth_event.dart';
+import '../../viewmodel/bloc/auth_state.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -47,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(height: 15.h),
                       _buildPasswordTextField(),
                       SizedBox(height: 30.h),
-                      _buildLoginButton()
+                      _buildLoginButton(context)
                     ],
                   ),
                 ),
@@ -117,19 +121,35 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginButton() {
+  Widget _buildLoginButton(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 13.w),
-      child: RoundedButton(
-        model: ButtonModel(
-          onPress: () {
-            Navigation()
-                .navigateAndRemoveUntil(routeName: AppRoutes.travelsScreen);
-            //loginKey.currentState!.validate();
-          },
-          title: LangKeys.login,
-          textColor: AppColors.black,
-        ),
+      child: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthLoggedIn) {
+            Navigation().navigateAndRemoveUntil(routeName: AppRoutes.travelsScreen);
+          } else if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
+        },
+        builder: (context, state) {
+          return RoundedButton(
+            model: ButtonModel(
+              isLoading: state is AuthLoading,
+              onPress: () {
+                if (loginKey.currentState!.validate()) {
+                  context.read<AuthBloc>().add(
+                      LoginUser(_emailController.text, _passwordController.text));
+                }
+              },
+              title: LangKeys.login,
+              textColor: AppColors.black,
+            ),
+
+          );
+        },
       ),
     );
   }
@@ -144,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Text(
               LangKeys.dontHaveAccount.substring(0, 23),
               style:
-                  TextThemes.style12400.copyWith(color: AppColors.greyMedium),
+              TextThemes.style12400.copyWith(color: AppColors.greyMedium),
             ),
             GestureDetector(
               onTap: () {

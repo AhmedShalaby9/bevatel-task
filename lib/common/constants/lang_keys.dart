@@ -32,4 +32,6 @@ class LangKeys {
   static String travelTitle = "travelTitle".tr();
   static String travelDesc = "travelDesc".tr();
   static String numberOfPersons = "numberOfPersons".tr();
+  static String editTravel = "editTravel".tr();
+  static String update = "update".tr();
 }

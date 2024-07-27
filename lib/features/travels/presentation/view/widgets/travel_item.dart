@@ -1,13 +1,20 @@
+import 'package:bevatel_task/common/helper/navigation/navigation.dart';
+import 'package:bevatel_task/common/helper/navigation/routes.dart';
+import 'package:bevatel_task/features/travels/domain/model/travel_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../common/constants/app_colors.dart';
 import '../../../../../common/constants/lang_keys.dart';
 import '../../../../../common/constants/text_themes.dart';
+import '../../viewmodel/travels_bloc.dart';
+import '../../viewmodel/travels_event.dart';
 import 'buttons/button_factory_provider.dart';
 
 class TravelItem extends StatelessWidget {
-  const TravelItem({super.key});
+  final TravelModel travel;
+  const TravelItem({super.key, required this.travel});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,7 @@ class TravelItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Title",
+            travel.title,
             style: TextThemes.boldTextStyle.copyWith(
               fontSize: 18.sp,
               color: AppColors.primary,
@@ -40,7 +47,7 @@ class TravelItem extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            "This is a fake description ",
+            travel.description,
             style: TextThemes.style14500.copyWith(
               fontSize: 14.sp,
               color: Colors.grey[700],
@@ -58,9 +65,9 @@ class TravelItem extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const TextSpan(
-                  text: "London",
-                  style: TextStyle(
+                TextSpan(
+                  text: travel.from,
+                  style: const TextStyle(
                     color: Colors.black87,
                   ),
                 ),
@@ -78,9 +85,9 @@ class TravelItem extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const TextSpan(
-                  text: "Paris",
-                  style: TextStyle(
+                TextSpan(
+                  text: travel.to,
+                  style: const TextStyle(
                     color: Colors.black87,
                   ),
                 ),
@@ -92,17 +99,23 @@ class TravelItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                "${LangKeys.persons}: 2",
+                "${LangKeys.persons}: ${travel.numberOfPersons}",
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const Spacer(),
-              ButtonFactoryProvider.getFactory(ButtonType.edit).createButton(),
+              ButtonFactoryProvider.getFactory(ButtonType.edit)
+                  .createButton(() {
+                Navigation().navigateTo(
+                    routeName: AppRoutes.addEditTravelScreen, arg: travel);
+              }),
               SizedBox(width: 8.w),
               ButtonFactoryProvider.getFactory(ButtonType.delete)
-                  .createButton(),
+                  .createButton(() {
+                context.read<TravelBloc>().add(DeleteTravel(travel.id));
+              }),
             ],
           ),
         ],

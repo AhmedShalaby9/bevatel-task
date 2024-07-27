@@ -1,5 +1,7 @@
+import 'package:bevatel_task/common/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../common/constants/app_colors.dart';
 import '../../../../../common/constants/lang_keys.dart';
 import '../../../../../common/constants/text_themes.dart';
@@ -7,15 +9,21 @@ import '../../../../../common/helper/validations/form_validation.dart';
 import '../../../../../common/models/button_model.dart';
 import '../../../../../common/widgets/custom_back_button.dart';
 import '../../../../../common/widgets/rounded_button.dart';
+import '../../../domain/model/travel_model.dart';
+import '../../viewmodel/travels_bloc.dart';
+import '../../viewmodel/travels_event.dart';
+import '../../viewmodel/travels_state.dart';
 
-class NewTravelScreen extends StatefulWidget {
-  const NewTravelScreen({super.key});
+class AddEditTravelScreen extends StatefulWidget {
+  final TravelModel? travel;
+
+  const AddEditTravelScreen({super.key, this.travel});
 
   @override
-  State<NewTravelScreen> createState() => _NewTravelScreenState();
+  State<AddEditTravelScreen> createState() => _AddEditTravelScreenState();
 }
 
-class _NewTravelScreenState extends State<NewTravelScreen> {
+class _AddEditTravelScreenState extends State<AddEditTravelScreen> {
   final TextEditingController _travelTitleController = TextEditingController();
   final TextEditingController _travelDescController = TextEditingController();
   final TextEditingController _fromController = TextEditingController();
@@ -25,6 +33,13 @@ class _NewTravelScreenState extends State<NewTravelScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.travel != null) {
+      _travelTitleController.text = widget.travel!.title;
+      _travelDescController.text = widget.travel!.description;
+      _fromController.text = widget.travel!.from;
+      _toController.text = widget.travel!.to;
+      _personsController.text = widget.travel!.numberOfPersons.toString();
+    }
   }
 
   @override
@@ -42,7 +57,9 @@ class _NewTravelScreenState extends State<NewTravelScreen> {
                 SizedBox(height: 50.h),
                 RichText(
                   text: TextSpan(
-                    text: LangKeys.addTravel,
+                    text: widget.travel == null
+                        ? LangKeys.addTravel
+                        : LangKeys.editTravel,
                     style: TextThemes.style25500
                         .copyWith(color: AppColors.backGround),
                   ),
@@ -57,6 +74,19 @@ class _NewTravelScreenState extends State<NewTravelScreen> {
                 _buildToTextField(),
                 SizedBox(height: 15.h),
                 _buildPersonsTextField(),
+                BlocConsumer<TravelBloc, TravelState>(
+                  listener: (context, state) {
+                    if (state is TravelAdded || state is TravelUpdated) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is TravelAdding || state is TravelUpdating) {
+                      return const Center(child: Loader());
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
               ],
             ),
           ),
@@ -132,13 +162,37 @@ class _NewTravelScreenState extends State<NewTravelScreen> {
             EdgeInsets.only(right: 38.w, left: 38.w, bottom: 30.h, top: 38.h),
         child: RoundedButton(
           model: ButtonModel(
-            title: LangKeys.submit,
+            title: widget.travel == null ? LangKeys.submit : LangKeys.update,
             onPress: () {
-              // Handle the submit action
+              if (_validateForm()) {
+                final travel = TravelModel(
+                  id: widget.travel?.id ??
+                      DateTime.now().millisecondsSinceEpoch.toString(),
+                  title: _travelTitleController.text,
+                  description: _travelDescController.text,
+                  from: _fromController.text,
+                  to: _toController.text,
+                  numberOfPersons: int.parse(_personsController.text),
+                );
+
+                if (widget.travel == null) {
+                  context.read<TravelBloc>().add(AddTravel(travel));
+                } else {
+                  context.read<TravelBloc>().add(UpdateTravel(travel));
+                }
+              }
             },
           ),
         ),
       ),
     );
+  }
+
+  bool _validateForm() {
+    return _travelTitleController.text.isNotEmpty &&
+        _travelDescController.text.isNotEmpty &&
+        _fromController.text.isNotEmpty &&
+        _toController.text.isNotEmpty &&
+        _personsController.text.isNotEmpty;
   }
 }

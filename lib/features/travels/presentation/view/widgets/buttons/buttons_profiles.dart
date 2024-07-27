@@ -19,9 +19,6 @@ class EditButtonFactory extends BaseButtonFactory {
 
   @override
   String label = LangKeys.edit;
-
-  @override
-  VoidCallback? onPressed = () {};
 }
 
 class DeleteButtonFactory extends BaseButtonFactory {
@@ -39,7 +36,4 @@ class DeleteButtonFactory extends BaseButtonFactory {
 
   @override
   String label = LangKeys.delete;
-
-  @override
-  VoidCallback? onPressed = () {};
 }

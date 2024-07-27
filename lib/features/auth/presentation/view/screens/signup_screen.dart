@@ -1,13 +1,20 @@
+import 'package:bevatel_task/common/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../common/constants/app_colors.dart';
 import '../../../../../common/constants/lang_keys.dart';
 import '../../../../../common/constants/text_themes.dart';
+import '../../../../../common/helper/navigation/navigation.dart';
+import '../../../../../common/helper/navigation/routes.dart';
 import '../../../../../common/helper/validations/form_validation.dart';
-
 import '../../../../../common/models/button_model.dart';
 import '../../../../../common/widgets/custom_back_button.dart';
 import '../../../../../common/widgets/rounded_button.dart';
+import '../../../domain/model/user_model.dart';
+import '../../viewmodel/bloc/auth_bloc.dart';
+import '../../viewmodel/bloc/auth_event.dart';
+import '../../viewmodel/bloc/auth_state.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -26,6 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final GlobalKey<FormState> _signupKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -64,18 +72,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
               style:
                   TextThemes.style12400.copyWith(color: AppColors.greyMedium),
             ),
-             SizedBox(height: 24.h),
-            _buildFullNameTextField(),
-            SizedBox(height: 15.h),
-            _buildEmailTextField(),
-            SizedBox(height: 15.h),
-            _buildPhoneTextField(),
-            SizedBox(height: 15.h),
-            _buildCountryTextField(),
-            SizedBox(height: 15.h),
-            _buildPasswordTextField(),
-            SizedBox(height: 15.h),
-            _buildConfirmPasswordTextField()
+            SizedBox(height: 24.h),
+            Form(
+              key: _signupKey,
+              child: Column(
+                children: [
+                  _buildFullNameTextField(),
+                  SizedBox(height: 15.h),
+                  _buildEmailTextField(),
+                  SizedBox(height: 15.h),
+                  _buildPhoneTextField(),
+                  SizedBox(height: 15.h),
+                  _buildCountryTextField(),
+                  SizedBox(height: 15.h),
+                  _buildPasswordTextField(),
+                  SizedBox(height: 15.h),
+                  _buildConfirmPasswordTextField()
+                ],
+              ),
+            )
           ]),
         ),
       )),
@@ -178,16 +193,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _buildNavBar() {
     return SafeArea(
       child: Padding(
-        padding:
-            EdgeInsets.only(right: 38.w, left: 38.w, bottom: 30.h, top: 38.h),
-        child: RoundedButton(
-          model: ButtonModel(
-              title: LangKeys.register,
-              onPress: () {
-                //  Navigation().navigateTo(routeName: AppRoutes.navigationScreen);
-              }),
-        ),
-      ),
+          padding:
+              EdgeInsets.only(right: 38.w, left: 38.w, bottom: 30.h, top: 38.h),
+          child: BlocConsumer<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthLoggedIn) {
+                Navigation()
+                    .navigateAndRemoveUntil(routeName: AppRoutes.travelsScreen);
+              } else if (state is AuthError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.message)),
+                );
+              }
+            },
+            builder: (context, state) {
+              return RoundedButton(
+                model: ButtonModel(
+                  isLoading: state is AuthLoading,
+                  title: LangKeys.register,
+                  onPress: () {
+                    if (_signupKey.currentState!.validate()) {
+                      final newUser = UserModel(
+                        id: '',
+                        name: _fullNameController.text,
+                        email: _emailController.text,
+                        country: _countryController.text,
+                        phone: _phoneNumberController.text,
+                      );
+                      context.read<AuthBloc>().add(
+                            SignUpUser(
+                              newUser,
+                              _passwordController.text,
+                            ),
+                          );
+                    }
+                  },
+                ),
+              );
+            },
+          )),
     );
   }
 }
