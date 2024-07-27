@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../domain/model/user_model.dart';
 import '../../domain/repo/i_user_repo.dart';
+import '../entities/user_entity.dart';
 
 class AuthRepo extends IAuthRepo {
   final FirebaseAuth auth;
@@ -32,6 +33,20 @@ class AuthRepo extends IAuthRepo {
       await auth.signInWithEmailAndPassword(email: email, password: password);
     } catch (e) {
       throw Exception('Error logging in user: $e');
+    }
+  }
+  @override
+  Future<List<UserModel>> getUsers() async {
+    try {
+      QuerySnapshot snapshot = await firestore.collection('users').get();
+      final entities = snapshot.docs.map((doc) {
+        return UserEntity.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+      return entities
+          .map((entity) => userMapper.transformUserEntityToModel(entity)!)
+          .toList();
+    } catch (e) {
+      throw Exception('Error getting users: $e');
     }
   }
 }

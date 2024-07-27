@@ -1,31 +1,35 @@
 class ChatEntity {
   final String id;
-  final String title;
-  final String lastMessage;
-  final String time;
+  final String sentUserId;
+  final String sentUserName;
+  final String message;
+  final DateTime timestamp;
 
   ChatEntity({
     required this.id,
-    required this.title,
-    required this.lastMessage,
-    required this.time,
+    required this.sentUserId,
+    required this.sentUserName,
+    required this.message,
+    required this.timestamp,
   });
-
-  factory ChatEntity.fromJson(Map<String, dynamic> json) {
-    return ChatEntity(
-      id: json['id'],
-      title: json['title'],
-      lastMessage: json['last_message'],
-      time: json['time'],
-    );
-  }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'title': title,
-      'last_message': lastMessage,
-      'time': time,
+      'sentUserId': sentUserId,
+      'sentUserName': sentUserName,
+      'message': message,
+      'timestamp': timestamp.toIso8601String(),
     };
+  }
+
+  static ChatEntity fromJson(Map<String, dynamic> json) {
+    return ChatEntity(
+      id: json['id'],
+      sentUserId: json['sentUserId'],
+      sentUserName: json['sentUserName'],
+      message: json['message'],
+      timestamp: DateTime.parse(json['timestamp']),
+    );
   }
 }

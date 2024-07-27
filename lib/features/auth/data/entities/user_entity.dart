@@ -19,7 +19,7 @@ class UserEntity {
       name: json['name'],
       email: json['email'],
       country: json['country'],
-      phone: json['phone'],
+      phone: json['phone'].toString(),
     );
   }
 

@@ -1,18 +1,25 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../common/constants/app_colors.dart';
-import '../../../../../common/constants/image_paths.dart';
 import '../../../../../common/constants/lang_keys.dart';
 import '../../../../../common/constants/text_themes.dart';
 import '../../../../../common/widgets/custom_back_button.dart';
+import '../../../../auth/domain/model/user_model.dart';
+import '../../../data/entities/chat_entity.dart';
+import '../../../domain/models/chat_model.dart';
+import '../../viewmodel/chat_bloc.dart';
+import '../../viewmodel/chat_events.dart';
+import '../../viewmodel/chat_state.dart';
 import '../widgets/message_card.dart';
 import '../widgets/pick_image_button.dart';
 import '../widgets/send_message_button.dart';
 
 class ChatDetailsScreen extends StatefulWidget {
-  const ChatDetailsScreen({super.key});
+  final UserModel user;
+
+  const ChatDetailsScreen({super.key, required this.user});
 
   @override
   State<ChatDetailsScreen> createState() => _ChatDetailsScreenState();
@@ -20,6 +27,13 @@ class ChatDetailsScreen extends StatefulWidget {
 
 class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   final TextEditingController _chatController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ChatBloc>().add(StreamChats(widget.user.id));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,41 +44,18 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
           child: Stack(
             alignment: AlignmentDirectional.bottomCenter,
             children: [
-              Container(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                padding: EdgeInsets.symmetric(vertical: 10.h),
-                decoration: BoxDecoration(
-                    color: AppColors.greySoft,
-                    borderRadius: BorderRadius.circular(50.r)),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 12.w, vertical: 6.h),
-                        decoration: BoxDecoration(
-                            color: AppColors.backGround.withOpacity(0.7),
-                            borderRadius: BorderRadius.circular(100.r)),
-                        child: Text(
-                          DateFormat.yMMMMd('en-US').format(DateTime.now()),
-                          style: TextThemes.style10500
-                              .copyWith(color: AppColors.white),
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          return const MessageCard();
-                        },
-                      ),
-                      SizedBox(height: 80.h),
-                    ],
-                  ),
-                ),
+              BlocBuilder<ChatBloc, ChatState>(
+                builder: (context, state) {
+                  if (state is ChatLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is ChatLoaded) {
+                    return _buildChatList(state.chats);
+                  } else if (state is ChatError) {
+                    return Center(child: Text(state.message));
+                  } else {
+                    return const Center(child: Text('No Chats'));
+                  }
+                },
               ),
               _buildChatTextField(),
             ],
@@ -79,28 +70,19 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
       title: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Stack(
-          //   alignment: AlignmentDirectional.topEnd,
-          //   children: [
-          //     const ProfileImageWidget(),
-          //     SvgPicture.asset(
-          //       ImagePaths.active,
-          //     ),
-          //   ],
-          // ),
           SizedBox(width: 20.w),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Milano",
+                widget.user.name,
                 style:
-                    TextThemes.style14700.copyWith(color: AppColors.backGround),
+                TextThemes.style14700.copyWith(color: AppColors.backGround),
               ),
               Text(
                 LangKeys.online,
                 style:
-                    TextThemes.style10600.copyWith(color: AppColors.greyMedium),
+                TextThemes.style10600.copyWith(color: AppColors.greyMedium),
               )
             ],
           )
@@ -110,6 +92,17 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
         padding: EdgeInsets.all(10),
         child: CustomBackButton(),
       ),
+    );
+  }
+
+  Widget _buildChatList(List<ChatModel> chats) {
+    return ListView.builder(
+      itemCount: chats.length,
+      itemBuilder: (context, index) {
+        final chat = chats[index];
+        final isSentByMe = chat.sentUserId == widget.user.id;
+        return MessageCard(chat: chat, isSentByMe: isSentByMe);
+      },
     );
   }
 
@@ -139,9 +132,27 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
             ),
             suffixIcon: Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.w),
-              child: const SendMessageButton(),
+              child: GestureDetector(
+                onTap: _sendMessage,
+                child: const SendMessageButton(),
+              ),
             )),
       ),
     );
+  }
+
+  void _sendMessage() {
+    if (_chatController.text.isNotEmpty) {
+      final chat = ChatEntity(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        sentUserId: widget.user.id,
+        sentUserName: widget.user.name,
+        message: _chatController.text,
+        timestamp: DateTime.now(),
+      );
+
+      context.read<ChatBloc>().add(AddChat(chat, widget.user.id));
+      _chatController.clear();
+    }
   }
 }

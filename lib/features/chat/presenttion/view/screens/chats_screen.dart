@@ -6,9 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../common/constants/app_colors.dart';
 import '../../../../../common/constants/lang_keys.dart';
 import '../../../../../common/constants/text_themes.dart';
-import '../../viewmodel/chat_bloc.dart';
-import '../../viewmodel/chat_events.dart';
-import '../../viewmodel/chat_state.dart';
+import '../../../../auth/presentation/viewmodel/bloc/auth_bloc.dart';
+import '../../../../auth/presentation/viewmodel/bloc/auth_event.dart';
+import '../../../../auth/presentation/viewmodel/bloc/auth_state.dart';
+
 import '../widgets/chat_card_item.dart';
 
 class ChatsScreen extends StatefulWidget {
@@ -24,7 +25,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ChatBloc>().add(LoadChats());
+    context.read<AuthBloc>().add(LoadUsers());
   }
 
   @override
@@ -37,25 +38,23 @@ class _ChatsScreenState extends State<ChatsScreen> {
           child: Column(
             children: [
               SizedBox(height: 16.h),
-              _buildSearchTextField(),
-              SizedBox(height: 16.h),
               Expanded(
-                child: BlocBuilder<ChatBloc, ChatState>(
+                child: BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) {
-                    if (state is ChatLoading) {
+                    if (state is AuthLoading) {
                       return const Center(child: Loader());
-                    } else if (state is ChatLoaded) {
+                    } else if (state is UsersLoaded) {
                       return ListView.builder(
-                        itemCount: state.chats.length,
+                        itemCount: state.users.length,
                         itemBuilder: (context, index) {
-                          final chat = state.chats[index];
-                          return ChatCardItem(chat: chat);
+                          final user = state.users[index];
+                          return UserCardItem(user: user);
                         },
                       );
-                    } else if (state is ChatError) {
+                    } else if (state is AuthError) {
                       return Center(child: Text(state.message));
                     } else {
-                      return const Center(child: Text('No Chats'));
+                      return const Center(child: Text('No Users'));
                     }
                   },
                 ),
@@ -74,32 +73,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
       title: Text(
         LangKeys.chat,
         style: TextThemes.style14700.copyWith(color: AppColors.backGround),
-      ),
-    );
-  }
-
-  Widget _buildSearchTextField() {
-    return Card(
-      elevation: 2,
-      shape: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25.r),
-          borderSide: BorderSide.none),
-      child: TextFormField(
-        controller: _searchController,
-        decoration: InputDecoration(
-            fillColor: AppColors.white,
-            hintText: LangKeys.search,
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.r),
-                borderSide: BorderSide.none),
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.r),
-                borderSide: BorderSide.none),
-            prefixIcon: const Icon(Icons.search, color: AppColors.backGround)),
-        onChanged: (value) {
-          // Handle the search logic here
-          // You can use the search value to filter the list of chats
-        },
       ),
     );
   }

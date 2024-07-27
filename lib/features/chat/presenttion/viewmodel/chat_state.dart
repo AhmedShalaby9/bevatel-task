@@ -8,12 +8,8 @@ class ChatLoading extends ChatState {}
 
 class ChatLoaded extends ChatState {
   final List<ChatModel> chats;
-  ChatLoaded(this.chats);
-}
 
-class ChatError extends ChatState {
-  final String message;
-  ChatError(this.message);
+  ChatLoaded(this.chats);
 }
 
 class ChatAdded extends ChatState {}
@@ -21,3 +17,11 @@ class ChatAdded extends ChatState {}
 class ChatUpdated extends ChatState {}
 
 class ChatDeleted extends ChatState {}
+
+class ChatError extends ChatState {
+  final String message;
+
+  ChatError(this.message);
+}
+
+class ChatStreaming extends ChatState {}

@@ -3,26 +3,25 @@ import '../../data/entities/chat_entity.dart';
 class ChatModel extends ChatEntity {
   ChatModel({
     required String id,
-    required String title,
-    required String lastMessage,
-    required String time,
-  }) : super(id: id, title: title, lastMessage: lastMessage, time: time);
+    required String sentUserId,
+    required String sentUserName,
+    required String message,
+    required DateTime timestamp,
+  }) : super(
+    id: id,
+    sentUserId: sentUserId,
+    sentUserName: sentUserName,
+    message: message,
+    timestamp: timestamp,
+  );
 
   factory ChatModel.fromEntity(ChatEntity entity) {
     return ChatModel(
       id: entity.id,
-      title: entity.title,
-      lastMessage: entity.lastMessage,
-      time: entity.time,
-    );
-  }
-
-  ChatEntity toEntity() {
-    return ChatEntity(
-      id: id,
-      title: title,
-      lastMessage: lastMessage,
-      time: time,
+      sentUserId: entity.sentUserId,
+      sentUserName: entity.sentUserName,
+      message: entity.message,
+      timestamp: entity.timestamp,
     );
   }
 }

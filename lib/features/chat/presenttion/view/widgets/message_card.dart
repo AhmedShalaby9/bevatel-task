@@ -1,58 +1,45 @@
+import 'package:bevatel_task/features/chat/domain/models/chat_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import '../../../../../common/constants/app_colors.dart';
-import '../../../../../common/constants/image_paths.dart';
 import '../../../../../common/constants/text_themes.dart';
 
-class MessageCard extends StatefulWidget {
-  const MessageCard({super.key});
+class MessageCard extends StatelessWidget {
+  final ChatModel chat;
+  final bool isSentByMe;
 
-  @override
-  State<MessageCard> createState() => _MessageCardState();
-}
+  const MessageCard({super.key, required this.chat, required this.isSentByMe});
 
-class _MessageCardState extends State<MessageCard> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-          margin: EdgeInsetsDirectional.only(
-            end: 12.w,
-            start: 62.w,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadiusDirectional.only(
-              topStart: Radius.circular(16.r),
-              bottomStart: Radius.circular(16.r),
-              bottomEnd: Radius.circular(16.r),
-            ),
-          ),
-          child: Text(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod?",
-            style: TextThemes.style12500.copyWith(color: AppColors.greyMedium),
-          ),
+    return Align(
+      alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        margin: EdgeInsets.symmetric(vertical: 5.h, horizontal: 8.w),
+        decoration: BoxDecoration(
+          color: isSentByMe ? AppColors.primary : AppColors.blackBG,
+          borderRadius: BorderRadius.circular(16.r),
         ),
-        SizedBox(height: 5.h),
-        Padding(
-          padding: EdgeInsetsDirectional.only(start: 62.w, end: 12.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SvgPicture.asset(ImagePaths.seen),
-              Text(
-                "10:45",
-                style: TextThemes.style10500
-                    .copyWith(color: AppColors.greyBarelyMedium),
-              )
-            ],
-          ),
-        )
-      ],
+        child: Column(
+          crossAxisAlignment:
+          isSentByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Text(
+              chat.message,
+              style: TextThemes.style12500.copyWith(
+                color: isSentByMe ? AppColors.blackBG : AppColors.black,
+              ),
+            ),
+            SizedBox(height: 5.h),
+            Text(
+              DateFormat('hh:mm a').format(chat.timestamp),
+              style: TextThemes.style10500.copyWith(color: AppColors.greyMedium),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

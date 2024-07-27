@@ -5,18 +5,20 @@ class ChatMapper {
   static ChatModel fromEntity(ChatEntity entity) {
     return ChatModel(
       id: entity.id,
-      title: entity.title,
-      lastMessage: entity.lastMessage,
-      time: entity.time,
+      message: entity.message,
+      sentUserId: entity.sentUserId,
+      sentUserName: entity.sentUserName,
+      timestamp: entity.timestamp,
     );
   }
 
   static ChatEntity toEntity(ChatModel model) {
     return ChatEntity(
       id: model.id,
-      title: model.title,
-      lastMessage: model.lastMessage,
-      time: model.time,
+      message: model.message,
+      sentUserId: model.sentUserId,
+      sentUserName: model.sentUserName,
+      timestamp: model.timestamp,
     );
   }
 }

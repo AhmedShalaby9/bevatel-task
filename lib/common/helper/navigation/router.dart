@@ -1,4 +1,5 @@
 import 'package:bevatel_task/common/helper/navigation/routes.dart';
+import 'package:bevatel_task/features/auth/domain/model/user_model.dart';
 import 'package:bevatel_task/features/chat/presenttion/view/screens/chats_screen.dart';
 import 'package:bevatel_task/features/travels/domain/model/travel_model.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) =>
               AddEditTravelScreen(travel: settings.arguments as TravelModel?));
     case AppRoutes.chatDetailsScreen:
-      return MaterialPageRoute(builder: (context) => const ChatDetailsScreen());
+      return MaterialPageRoute(
+          builder: (context) => ChatDetailsScreen(
+                user: settings.arguments as UserModel,
+              ));
     case AppRoutes.chatScreen:
       return MaterialPageRoute(builder: (context) => const ChatsScreen());
 

@@ -1,67 +1,65 @@
-import 'package:bevatel_task/features/chat/domain/models/chat_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../../../../common/constants/app_colors.dart';
-import '../../../../../common/constants/image_paths.dart';
 import '../../../../../common/constants/text_themes.dart';
+import '../../../../auth/domain/model/user_model.dart';
 import '../../../../../common/helper/navigation/navigation.dart';
 import '../../../../../common/helper/navigation/routes.dart';
 
-class ChatCardItem extends StatelessWidget {
-  final ChatModel chat;
+class UserCardItem extends StatelessWidget {
+  final UserModel user;
 
-  const ChatCardItem({super.key, required this.chat});
+  const UserCardItem({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigation().navigateTo(routeName: AppRoutes.chatDetailsScreen);
+        Navigation().navigateTo(routeName: AppRoutes.chatDetailsScreen, arg: user);
       },
-      child: Card(
-        elevation: 0.2,
-        color: AppColors.greySoft,
-        shape: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25.r),
-            borderSide: BorderSide.none),
-        child: ListTile(
-          title: Text(
-            chat.title,
-            style: TextThemes.style12700.copyWith(color: AppColors.backGround),
-          ),
-          subtitle: Text(
-            chat.lastMessage,
-            style: TextThemes.style10600.copyWith(color: AppColors.backGround),
-          ),
-          trailing: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                chat.time,
-                style: TextThemes.style8400
-                    .copyWith(color: AppColors.greyBarelyMedium),
+      child: Container(
+        padding: EdgeInsets.all(16.sp),
+        margin: EdgeInsets.symmetric(vertical: 8.h),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8.r,
+              offset: Offset(0, 4.h),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              user.name,
+              style: TextThemes.boldTextStyle.copyWith(
+                fontSize: 18.sp,
+                color: AppColors.primary,
               ),
-              SizedBox(height: 3.h),
-            ],
-          ),
-          leading: Stack(
-            alignment: AlignmentDirectional.topEnd,
-            children: [
-              CircleAvatar(
-                radius: 20.r,
-                backgroundColor: AppColors.primary,
-                child: const Icon(
-                  Icons.person,
-                  color: AppColors.black,
-                ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              user.email,
+              style: TextThemes.style14500.copyWith(
+                fontSize: 14.sp,
+                color: Colors.grey[700],
               ),
-              SvgPicture.asset(
-                ImagePaths.active,
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              user.country,
+              style: TextThemes.style14500.copyWith(
+                fontSize: 14.sp,
+                color: Colors.grey[700],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

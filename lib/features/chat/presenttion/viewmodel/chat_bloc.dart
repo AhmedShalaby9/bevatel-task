@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../domain/models/chat_model.dart';
 import '../../domain/repo/i_chat_repo.dart';
- import 'chat_events.dart';
+import 'chat_events.dart';
 import 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
@@ -12,12 +12,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<AddChat>(_onAddChat);
     on<UpdateChat>(_onUpdateChat);
     on<DeleteChat>(_onDeleteChat);
+    on<StreamChats>(_onStreamChats);
   }
 
   Future<void> _onLoadChats(LoadChats event, Emitter<ChatState> emit) async {
     emit(ChatLoading());
     try {
-      final chats = await chatRepo.getChats();
+      final chats = await chatRepo.getChats(event.userId);
       emit(ChatLoaded(chats));
     } catch (e) {
       emit(ChatError(e.toString()));
@@ -28,7 +29,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       await chatRepo.addChat(event.chat);
       emit(ChatAdded());
-      add(LoadChats());
+      add(LoadChats(event.userId));
     } catch (e) {
       emit(ChatError(e.toString()));
     }
@@ -38,7 +39,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       await chatRepo.updateChat(event.chat);
       emit(ChatUpdated());
-      add(LoadChats());
+      add(LoadChats(event.chat.sentUserId));
     } catch (e) {
       emit(ChatError(e.toString()));
     }
@@ -48,7 +49,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       await chatRepo.deleteChat(event.chatId);
       emit(ChatDeleted());
-      add(LoadChats());
+      add(LoadChats(event.userId));
+    } catch (e) {
+      emit(ChatError(e.toString()));
+    }
+  }
+
+  Future<void> _onStreamChats(StreamChats event, Emitter<ChatState> emit) async {
+    try {
+      await emit.forEach(
+        chatRepo.streamChats(event.userId),
+        onData: (List<ChatModel> chats) => ChatLoaded(chats),
+        onError: (e, stackTrace) => ChatError(e.toString()),
+      );
     } catch (e) {
       emit(ChatError(e.toString()));
     }
